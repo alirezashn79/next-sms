@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const { phone } = req.body;
   const code = Math.floor(Math.random() * 90000) + 10000;
-  const expTime = new Date().getTime() + 60000;
+  const expTime = new Date().getTime() + 30000;
 
   request.post(
     {

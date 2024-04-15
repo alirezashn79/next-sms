@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -7,6 +8,8 @@ function Index() {
   const [code, setCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const onSendCode = async (e) => {
     e.preventDefault();
@@ -27,8 +30,18 @@ function Index() {
 
   const onCheckCode = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    console.log("code =>", code);
+    try {
+      setIsLoading(true);
+      const res = await axios.post("/api/sms/verify", { phone, code });
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          router.replace("/dashboard");
+        }, 500);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (
